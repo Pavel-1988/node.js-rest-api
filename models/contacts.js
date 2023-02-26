@@ -1,20 +1,34 @@
-const fs = require('fs/promises');
-const path = require('path');
+// const fs = require('fs/promises');
+// const path = require('path');
 const { v4 } = require('uuid');
 
+// const contactsPath = path.join(__dirname, 'contacts.json');
 
-const contactsPath = path.join(__dirname, 'contacts.json');
+const Contacts = require('./contactsSchemas')
+
+// const listContacts = async () => {
+//   const resultString = await fs.readFile(contactsPath, "utf8");
+//   const result = JSON.parse(resultString);
+//   return result
+
+// }
 
 const listContacts = async () => {
-  const resultString = await fs.readFile(contactsPath, "utf8");
-  const result = JSON.parse(resultString);
+  const result = await Contacts.find({}, "-createdAt, -updatedAt");
+  
   return result
 
 }
 
+// const getContactById = async (id) => {
+//     const contacts = await listContacts();
+//     const contactById = contacts.find(contact => contact.id === id);
+//     return contactById ? contactById : null;
+// }
+
 const getContactById = async (id) => {
-    const contacts = await listContacts();
-    const contactById = contacts.find(contact => contact.id === id);
+    // const contacts = await listContacts();
+    const contactById = await Contacts.findById({ _id: id });
     return contactById ? contactById : null;
 }
 

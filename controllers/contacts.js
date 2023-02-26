@@ -1,25 +1,26 @@
+const Contacts = require('../models/contactSchema')
 
-
-const contactModels = require("../models/contacts")
+// const contactModels = require("../models/contacts")
 
 const { ctrlWrapper } = require("../helpers/ctrlWrapper");
 const {addContactValidation, updateContactValidation} = require("../schemas/validationsContact")
 
-const listContacts = async (req, res) => {
-  const contacts = await contactModels.listContacts();
+const getAll = async (req, res) => {
+  // const contacts = await contactModels.listContacts();
+  const result = await Contacts.find({}, "-createdAt, -updatedAt");
   res.json({
       status: "success",
       code: 200,
       message: "Contacts FOUND",
       data: {
-        contacts,
+        result,
       },
   });
 }
 
-const getContactById = async (req, res) => {
+const getById = async (req, res) => {
   const { id } = req.params;
-  const result = await contactModels.getContactById(id);
+  const result =  await Contacts.findById(id);
     if (!result) {
         res.status(404).json({
         status: "error",
@@ -38,7 +39,7 @@ const getContactById = async (req, res) => {
     });
 }
 
-const addContact = async (req, res) => {
+const add = async (req, res) => {
   const { error } = addContactValidation(req.body);
   if (error) {
       res.status(400).json({
@@ -48,7 +49,7 @@ const addContact = async (req, res) => {
       });
       return;
   }
-  const result = await contactModels.addContact(req.body);
+  const result = await Contacts.create(req.body);
   res.status(201).json({
       status: "success",
       code: 201,
@@ -59,7 +60,7 @@ const addContact = async (req, res) => {
      })
 }
 
-const updateContact = async (req, res) => {
+const updateById = async (req, res) => {
   const { error } = updateContactValidation(req.body);
   if (error) {
     res.status(400).json({
@@ -76,7 +77,7 @@ const updateContact = async (req, res) => {
     });
   }
   const { id } = req.params;
-  const result = await contactModels.updateContact(id, req.body);
+  const result = await Contacts.findByIdAndUpdate(id, req.body, {new: true});
    if (!result) {
           res.status(404).json({
           status: "error",
@@ -93,12 +94,11 @@ const updateContact = async (req, res) => {
         result,
       },
     });
-
 }
 
-const removeContact = async (req, res) => {
+const deleteById = async (req, res) => {
   const { id } = req.params;
-  const deletedContact = await contactModels.removeContact(id);
+  const deletedContact = await Contacts.findByIdAndRemove(id);
   if (!deletedContact) {
         res.status(404).json({
         status: "error",
@@ -118,9 +118,9 @@ const removeContact = async (req, res) => {
 }
 
 module.exports = {
-    listContacts: ctrlWrapper(listContacts),
-    getContactById: ctrlWrapper(getContactById),
-    addContact: ctrlWrapper(addContact),
-    updateContact: ctrlWrapper(updateContact),
-    removeContact: ctrlWrapper(removeContact),
+    getAll: ctrlWrapper(getAll),
+    getById: ctrlWrapper(getById),
+    add: ctrlWrapper(add),
+    updateById: ctrlWrapper(updateById),
+    deleteById: ctrlWrapper(deleteById),
 }
