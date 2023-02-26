@@ -1,17 +1,14 @@
 const Contacts = require('../models/contactSchema')
-
-// const contactModels = require("../models/contacts")
-
 const { ctrlWrapper } = require("../helpers/ctrlWrapper");
-const {addContactValidation, updateContactValidation} = require("../schemas/validationsContact")
+const {addContactValidation, updateContactValidation, favoriteContactValidation} = require("../schemas/validationsContact")
 
 const getAll = async (req, res) => {
-  // const contacts = await contactModels.listContacts();
   const result = await Contacts.find({}, "-createdAt, -updatedAt");
+  const quntityContacts = result.length
   res.json({
       status: "success",
       code: 200,
-      message: "Contacts FOUND",
+      message: ` ${quntityContacts}  Contacts FOUND`,
       data: {
         result,
       },
@@ -61,7 +58,7 @@ const add = async (req, res) => {
 }
 
 const updateById = async (req, res) => {
-  const { error } = updateContactValidation(req.body);
+  const { error } = favoriteContactValidation(req.body);
   if (error) {
     res.status(400).json({
     status: "error",
@@ -73,7 +70,7 @@ const updateById = async (req, res) => {
 
   if (Object.keys(req.body).length === 0) {
     return res.status(400).json({
-      message: "missing All fields"
+      message: "missing  fields"
     });
   }
   const { id } = req.params;
@@ -117,10 +114,48 @@ const deleteById = async (req, res) => {
     })
 }
 
+const patchById = async (req, res) => {
+  const { error } = updateContactValidation(req.body);
+  if (error) {
+    res.status(400).json({
+    status: "error",
+    code: 400,
+    message:"missing fields favorite",
+    });
+    return;
+  }
+
+    if (Object.keys(req.body).length === 0) {
+    return res.status(400).json({
+      message: "missing  fields"
+    });
+  }
+
+  const { id  } = req.params;
+  const result = await Contacts.findByIdAndUpdate(id, req.body, {new: true});
+  if (!result) {
+      res.status(404).json({
+      status: "error",
+      code: 404,
+      message: `Not found`,
+    });
+    return;
+  }
+  res.json({
+      status: "success",
+      code: 200,
+      message: `Changes with id=${id} done`,
+      data: {
+        result,
+      },
+    });
+}
+
 module.exports = {
-    getAll: ctrlWrapper(getAll),
-    getById: ctrlWrapper(getById),
-    add: ctrlWrapper(add),
-    updateById: ctrlWrapper(updateById),
-    deleteById: ctrlWrapper(deleteById),
+  getAll: ctrlWrapper(getAll),
+  getById: ctrlWrapper(getById),
+  add: ctrlWrapper(add),
+  updateById: ctrlWrapper(updateById),
+  deleteById: ctrlWrapper(deleteById),
+  patchById: ctrlWrapper(patchById),
 }

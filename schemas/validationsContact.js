@@ -20,4 +20,11 @@ const updateContactValidation = (data) => {
   return shema.validate(data)
 }
 
-module.exports ={addContactValidation, updateContactValidation}
+const favoriteContactValidation = (data) => {
+  const shema = Joi.object({
+    favorite: Joi.boolean().required(),
+  });
+  return shema.validate(data)
+}
+
+module.exports ={addContactValidation, updateContactValidation,favoriteContactValidation}

@@ -3,8 +3,9 @@ const {
   getById,
   deleteById,
   add,
-  updateById
-} = require("../../controllers/contacts");
+  updateById,
+  patchById
+} = require("../../controllers/contactsCtrl");
 
 
 const express = require('express')
@@ -18,6 +19,8 @@ router.post('/', add )
 
 router.delete('/:id', deleteById )
 
-router.put('/:id', updateById )
+router.put('/:id', updateById)
+
+router.patch('/:id/favorite', patchById )
 
 module.exports = router
