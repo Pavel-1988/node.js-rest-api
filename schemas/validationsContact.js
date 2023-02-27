@@ -5,6 +5,7 @@ const addContactValidation = (data) => {
     name: Joi.string().min(3).required(),
     phone: Joi.string().required(),
     email: Joi.string().email().required(),
+    favorite: Joi.boolean().optional(),
   });
   return shema.validate(data)
 }
@@ -14,8 +15,16 @@ const updateContactValidation = (data) => {
     name: Joi.string().min(3).optional(),
     phone: Joi.string().optional(),
     email: Joi.string().email().optional(),
+    favorite: Joi.boolean().optional(),
   });
   return shema.validate(data)
 }
 
-module.exports ={addContactValidation, updateContactValidation}
+const favoriteContactValidation = (data) => {
+  const shema = Joi.object({
+    favorite: Joi.boolean().required(),
+  });
+  return shema.validate(data)
+}
+
+module.exports ={addContactValidation, updateContactValidation,favoriteContactValidation}
