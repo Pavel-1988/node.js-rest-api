@@ -7,13 +7,14 @@ const {
   patchById
 } = require("../../controllers/contactsCtrl");
 
+const {isValidId} = require('../../middlewares/isValidId')
 
 const express = require('express')
 const router = express.Router()
 
 router.get('/', getAll )
 
-router.get('/:id', getById)
+router.get('/:id',isValidId, getById)
 
 router.post('/', add )
 
