@@ -4,7 +4,7 @@ const {
   deleteById,
   add,
   updateById,
-  patchById
+  patchFavorite
 } = require("../../controllers/contactsCtrl");
 
 const {isValidId} = require('../../middlewares/isValidId')
@@ -18,10 +18,10 @@ router.get('/:id',isValidId, getById)
 
 router.post('/', add )
 
-router.delete('/:id', deleteById )
+router.delete('/:id', isValidId, deleteById )
 
-router.put('/:id', updateById)
+router.put('/:id', isValidId, updateById)
 
-router.patch('/:id/favorite', patchById )
+router.patch('/:id/favorite', patchFavorite )
 
 module.exports = router

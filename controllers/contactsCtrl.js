@@ -58,7 +58,7 @@ const add = async (req, res) => {
 }
 
 const updateById = async (req, res) => {
-  const { error } = favoriteContactValidation(req.body);
+  const { error } = updateContactValidation(req.body);
   if (error) {
     res.status(400).json({
     status: "error",
@@ -114,8 +114,8 @@ const deleteById = async (req, res) => {
     })
 }
 
-const patchById = async (req, res) => {
-  const { error } = updateContactValidation(req.body);
+const patchFavorite = async (req, res) => {
+  const { error } = favoriteContactValidation(req.body);
   if (error) {
     res.status(400).json({
     status: "error",
@@ -157,5 +157,5 @@ module.exports = {
   add: ctrlWrapper(add),
   updateById: ctrlWrapper(updateById),
   deleteById: ctrlWrapper(deleteById),
-  patchById: ctrlWrapper(patchById),
+  patchFavorite: ctrlWrapper(patchFavorite),
 }
