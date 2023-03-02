@@ -3,16 +3,16 @@ const {
   login
 } = require("../../controllers/authCtrl");
 
-const { joiValidateSchema } = require('../../middlewares/validateSchema');
-const {signupValidation} = require('../../schemas/validationsUsers')
+const { requiredFieldsValidate } = require('../../middlewares/usersValidateSchema');
+const {regLogShema} = require('../../models/userModel')
 
 const express = require('express')
 const router = express.Router()
 
 
-router.post('/signup', joiValidateSchema(signupValidation), signup )
+router.post('/signup', requiredFieldsValidate(regLogShema), signup )
 
-router.post('/login', joiValidateSchema(signupValidation), login )
+router.post('/login', requiredFieldsValidate(regLogShema), login )
 
 router.get('/logout',  )
 

@@ -1,10 +1,9 @@
 const jwt = require("jsonwebtoken");
 const bcrypt = require("bcrypt")
-const secert = "secret"
 const { Conflict } = require("http-errors");
 const { Unauthorized } = require("http-errors");
 
-const User = require('../models/usersSchema')
+const {User} = require('../models/userModel')
 const { ctrlWrapper } = require("../helpers/ctrlWrapper");
 
 
@@ -15,8 +14,6 @@ const signup = async (req, res) => {
   if (userMail) {
     throw new Conflict(`Email "${email}" in use`);
   }
-
-  
    await User.create({
     email,
     password: await bcrypt.hash(password, 10),
@@ -35,27 +32,22 @@ const signup = async (req, res) => {
 
 const login = async (req, res) => {
   const { email, password, } = req.body;
+
   const user = await User.findOne({ email, });
-  
   if (!user) {
-    throw new Unauthorized("Email or password is wrong");
+    throw new Unauthorized("Email is wrong");
   }
 
   const passwordCompare = await  bcrypt.compare(password, user.password);
   if (!passwordCompare) {
-    throw new Unauthorized("Email or password is wrong");
+    throw new Unauthorized("Password is wrong");
   }
-
 
   const payload = {
     id: user._id,
   };
-const token = jwt.sign(payload, process.env.JWT_SECRET , { expiresIn: '1d' });
-  
-  // const token = "dsfgsfgsdfgsgsdf"
-
+  const token = jwt.sign(payload, process.env.JWT_SECRET , { expiresIn: '1d' });
   await User.findByIdAndUpdate(user._id, { token });
-
   res.status(201).json({
     status: "success",
     code: 201,
@@ -67,8 +59,6 @@ const token = jwt.sign(payload, process.env.JWT_SECRET , { expiresIn: '1d' });
       },
     }
    });
-
-
 }
 
 

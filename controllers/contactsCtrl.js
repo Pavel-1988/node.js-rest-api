@@ -1,6 +1,6 @@
-const Contacts = require('../models/contactSchema')
+const {Contacts} = require('../models/contactModel')
 const { ctrlWrapper } = require("../helpers/ctrlWrapper");
-const {addContactValidation, updateContactValidation, favoriteContactValidation} = require("../schemas/validationsContact")
+// const {addContactValidation, updateContactValidation, favoriteContactValidation} = require("../schemas/validationsContact")
 
 const getAll = async (req, res) => {
   const result = await Contacts.find({}, "-createdAt, -updatedAt");
@@ -37,15 +37,15 @@ const getById = async (req, res) => {
 }
 
 const add = async (req, res) => {
-  const { error } = addContactValidation(req.body);
-  if (error) {
-      res.status(400).json({
-      status: "error",
-      code: 400,
-      message:"missing required name field",
-      });
-      return;
-  }
+  // const { error } = addContactValidation(req.body);
+  // if (error) {
+  //     res.status(400).json({
+  //     status: "error",
+  //     code: 400,
+  //     message:"missing required name field",
+  //     });
+  //     return;
+  // }
   const result = await Contacts.create(req.body);
   res.status(201).json({
       status: "success",
@@ -58,15 +58,15 @@ const add = async (req, res) => {
 }
 
 const updateById = async (req, res) => {
-  const { error } = updateContactValidation(req.body);
-  if (error) {
-    res.status(400).json({
-    status: "error",
-    code: 400,
-    message:"missing fields",
-    });
-    return;
-  }
+  // const { error } = updateContactValidation(req.body);
+  // if (error) {
+  //   res.status(400).json({
+  //   status: "error",
+  //   code: 400,
+  //   message:"missing fields",
+  //   });
+  //   return;
+  // }
 
   if (Object.keys(req.body).length === 0) {
     return res.status(400).json({
@@ -115,15 +115,15 @@ const deleteById = async (req, res) => {
 }
 
 const patchFavorite = async (req, res) => {
-  const { error } = favoriteContactValidation(req.body);
-  if (error) {
-    res.status(400).json({
-    status: "error",
-    code: 400,
-    message:"missing fields favorite",
-    });
-    return;
-  }
+  // const { error } = favoriteContactValidation(req.body);
+  // if (error) {
+  //   res.status(400).json({
+  //   status: "error",
+  //   code: 400,
+  //   message:"missing fields favorite",
+  //   });
+  //   return;
+  // }
 
     if (Object.keys(req.body).length === 0) {
     return res.status(400).json({

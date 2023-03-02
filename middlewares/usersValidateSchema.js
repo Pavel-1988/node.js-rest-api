@@ -1,4 +1,4 @@
-const joiValidateSchema = (schema) => {
+const requiredFieldsValidate = (schema) => {
   return (req, res, next) => {
     const { error } = schema(req.body);
 
@@ -6,11 +6,11 @@ const joiValidateSchema = (schema) => {
       return res.status(400).json({
         status: "Invalid request data",
         code: 400,
-        message: "Ошибка от Joi или другой библиотеки валидации"
+        message: "email and password is required"
       });
     }
     next();
   };
 }
 
-module.exports = {joiValidateSchema};
+module.exports = { requiredFieldsValidate };
