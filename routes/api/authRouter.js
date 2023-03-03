@@ -1,23 +1,24 @@
 const {
   signup,
-  login
+  login,
+  getCurrent,
+  logout
 } = require("../../controllers/authCtrl");
 
-const { requiredFieldsValidate } = require('../../middlewares/usersValidateSchema');
-const {regLogShema} = require('../../models/userModel')
+const { requiredFieldsValidate,auth } = require('../../middlewares');
+const {regLogSchema} = require('../../models/userModel')
 
 const express = require('express')
 const router = express.Router()
 
 
-router.post('/signup', requiredFieldsValidate(regLogShema), signup )
+router.post('/signup', requiredFieldsValidate(regLogSchema), signup )
 
-router.post('/login', requiredFieldsValidate(regLogShema), login )
-
-router.get('/logout',  )
-
-router.get('/current', )
+router.post('/login', requiredFieldsValidate(regLogSchema), login )
 
 
+router.get('/current', auth ,  getCurrent)
+
+router.post('/logout', auth,  logout)
 
 module.exports = router

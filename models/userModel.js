@@ -25,7 +25,7 @@ const userSchema = new Schema(
   { versionKey: false, timestamps: true }
 )
 
-const regLogShema = (data) => {
+const regLogSchema = (data) => {
   const schema = Joi.object({
     email: Joi.string().email().required(),
     password: Joi.string().min(3).required(),
@@ -36,5 +36,5 @@ const regLogShema = (data) => {
 const User = model('user', userSchema);
 module.exports = {
   User,
-  regLogShema
+  regLogSchema
 };

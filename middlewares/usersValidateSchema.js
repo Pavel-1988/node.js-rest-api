@@ -13,4 +13,4 @@ const requiredFieldsValidate = (schema) => {
   };
 }
 
-module.exports = { requiredFieldsValidate };
+module.exports =  requiredFieldsValidate ;
