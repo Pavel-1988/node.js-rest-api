@@ -6,7 +6,7 @@ const requiredFieldsValidate = (schema) => {
       return res.status(400).json({
         status: "Invalid request data",
         code: 400,
-        message: "email and password is required"
+        message: "missed filds"
       });
     }
     next();

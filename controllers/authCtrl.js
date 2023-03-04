@@ -75,6 +75,28 @@ const getCurrent = async (req, res) => {
   });
 }
 
+const patchSubscription = async (req, res) => {
+  const { _id } = req.user;
+  const { subscription } = req.body;
+
+  const result = await Contacts.findByIdAndUpdate(_id, {subscription}, {new: true});
+   if (!result) {
+      res.status(404).json({
+      status: "error",
+      code: 404,
+      message: `Not found`,
+    });
+    return;
+  }
+  res.json({
+    status: "success",
+    code: 200,
+    data: {
+      subscription: result.subscription,
+    },
+  });
+}
+
 const logout = async (req, res) => {
   const { _id } = req.user;
   await User.findByIdAndUpdate(_id, { token: null });
@@ -86,5 +108,6 @@ module.exports = {
   login: ctrlWrapper(login),
   getCurrent: ctrlWrapper(getCurrent),
   logout: ctrlWrapper(logout),
+  patchSubscription: ctrlWrapper(patchSubscription),
 
 }

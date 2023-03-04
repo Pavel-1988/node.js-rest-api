@@ -32,9 +32,16 @@ const regLogSchema = (data) => {
   });
   return schema.validate(data)
 }
+const patchSubSchema = (data) => {
+  const schema = Joi.object({
+    subscription: Joi.string().required(),
+  });
+  return schema.validate(data)
+}
 
 const User = model('user', userSchema);
 module.exports = {
   User,
-  regLogSchema
+  regLogSchema,
+  patchSubSchema
 };

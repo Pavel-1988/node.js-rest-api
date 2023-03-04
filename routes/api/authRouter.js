@@ -2,11 +2,12 @@ const {
   signup,
   login,
   getCurrent,
-  logout
+  logout,
+  patchSubscription
 } = require("../../controllers/authCtrl");
 
 const { requiredFieldsValidate,auth } = require('../../middlewares');
-const {regLogSchema} = require('../../models/userModel')
+const {regLogSchema, patchSubSchema} = require('../../models/userModel')
 
 const express = require('express')
 const router = express.Router()
@@ -19,6 +20,8 @@ router.post('/login', requiredFieldsValidate(regLogSchema), login )
 
 router.get('/current', auth ,  getCurrent)
 
-router.post('/logout', auth,  logout)
+router.get('/logout', auth, logout)
+
+router.patch('/:id/subscription', auth, requiredFieldsValidate(patchSubSchema), patchSubscription)
 
 module.exports = router
