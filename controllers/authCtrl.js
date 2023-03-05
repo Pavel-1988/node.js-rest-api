@@ -6,8 +6,6 @@ const { Unauthorized } = require("http-errors");
 const {User} = require('../models/userModel')
 const { ctrlWrapper } = require("../helpers/ctrlWrapper");
 
-
-
 const signup = async (req, res) => {
   const { email, password, subscription } = req.body;
   const userMail = await User.findOne({ email });
@@ -75,7 +73,7 @@ const getCurrent = async (req, res) => {
   });
 }
 
-const patchSubscription = async (req, res) => {
+const patchSub = async (req, res) => {
   const { _id } = req.user;
   const { subscription } = req.body;
 
@@ -108,6 +106,6 @@ module.exports = {
   login: ctrlWrapper(login),
   getCurrent: ctrlWrapper(getCurrent),
   logout: ctrlWrapper(logout),
-  patchSubscription: ctrlWrapper(patchSubscription),
+  patchSub: ctrlWrapper(patchSub),
 
 }

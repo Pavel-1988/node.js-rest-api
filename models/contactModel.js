@@ -53,8 +53,6 @@ const favoriteContactSchema = (data) => {
   return shema.validate(data)
 }
 
-
-
 const Contacts = model('contact', contactSchema);
 
 module.exports = {

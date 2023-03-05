@@ -18,17 +18,17 @@ const router = express.Router()
 
 router.get('/', auth, getAll )
 
-router.get('/:id', auth, isValidId, getById)
+router.get('/:id',  auth, isValidId, getById)
 
-router.post('/', auth,  add);
+router.post('/', auth, add);
 // router.post('/', addContactValidate(addContactSchema), add);
 
 router.delete('/:id',auth, isValidId, deleteById )
 
-router.put('/:id',auth, isValidId, updateById)
+router.put('/:id', isValidId, updateById)
 // router.put('/:id', isValidId, updateContactValidate(updateContactSchema), updateById)
 
-router.patch('/:id/favorite',auth, patchFavorite)
+router.patch('/:id/favorite', patchFavorite)
 // router.patch('/:id/favorite', patchFavoriteValidate(favoriteContactSchema), patchFavorite )
 
 module.exports = router

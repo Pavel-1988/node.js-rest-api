@@ -3,7 +3,7 @@ const {
   login,
   getCurrent,
   logout,
-  patchSubscription
+  patchSub
 } = require("../../controllers/authCtrl");
 
 const { requiredFieldsValidate,auth } = require('../../middlewares');
@@ -17,11 +17,10 @@ router.post('/signup', requiredFieldsValidate(regLogSchema), signup )
 
 router.post('/login', requiredFieldsValidate(regLogSchema), login )
 
-
 router.get('/current', auth ,  getCurrent)
 
 router.get('/logout', auth, logout)
 
-router.patch('/:id/subscription', auth, requiredFieldsValidate(patchSubSchema), patchSubscription)
+router.patch('/:id/subscription', auth, requiredFieldsValidate(patchSubSchema), patchSub)
 
 module.exports = router
