@@ -19,10 +19,9 @@ const getAll = async (req, res) => {
 }
 
 const getById = async (req, res) => {
-  const { _id: owner } = req.user;
   const { id } = req.params;
-  const result = await Contacts.findById({ id, owner });
-    // const result =  await Contacts.findOne({id, owner});
+  const result = await Contacts.findById(id);
+  
     if (!result) {
         res.status(404).json({
         status: "error",
@@ -64,7 +63,6 @@ const add = async (req, res) => {
 }
 
 const updateById = async (req, res) => {
-  // const { _id: owner } = req.user;
   const { error } = updateContactSchema(req.body);
   if (error) {
     res.status(400).json({
@@ -102,7 +100,6 @@ const updateById = async (req, res) => {
 
 const deleteById = async (req, res) => {
   const { id } = req.params;
-  // const { _id: owner } = req.user;
   const deletedContact = await Contacts.findByIdAndRemove(id);
   if (!deletedContact) {
         res.status(404).json({
