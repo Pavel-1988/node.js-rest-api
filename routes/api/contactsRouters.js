@@ -21,9 +21,9 @@ router.post('/', auth, add);
 
 router.delete('/:id',auth, isValidId, deleteById )
 
-router.put('/:id', isValidId, updateById)
+router.put('/:id',auth, isValidId, updateById)
 
-router.patch('/:id/favorite', patchFavorite)
+router.patch('/:id/favorite',auth, patchFavorite)
 
 
 module.exports = router

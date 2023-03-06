@@ -20,16 +20,18 @@ const getAll = async (req, res) => {
 
 const getById = async (req, res) => {
   const { id } = req.params;
-  const result = await Contacts.findById(id);
+  const { _id: owner } = req.user;
+
+  const result = await Contacts.findOne({_id: id, owner} );
   
-    if (!result) {
-        res.status(404).json({
-        status: "error",
-        code: 404,
-        message: `Contact with id=${id} NOT FOUND`,
-      });
-      return;
-    }
+  if (!result) {
+      res.status(404).json({
+      status: "error",
+      code: 404,
+      message: `Contact with id=${id} NOT FOUND`,
+    });
+    return;
+  }
   res.json({
       status: "success",
       code: 200,
@@ -78,8 +80,9 @@ const updateById = async (req, res) => {
       message: "missing  fields"
     });
   }
-  const { id } = req.params;
-  const result = await Contacts.findByIdAndUpdate(id, req.body, {new: true});
+   const { id } = req.params;
+  const { _id: owner } = req.user;
+  const result = await Contacts.findOneAndUpdate({_id: id, owner}, req.body, {new: true});
    if (!result) {
           res.status(404).json({
           status: "error",
@@ -100,7 +103,8 @@ const updateById = async (req, res) => {
 
 const deleteById = async (req, res) => {
   const { id } = req.params;
-  const deletedContact = await Contacts.findByIdAndRemove(id);
+  const { _id: owner } = req.user;
+  const deletedContact = await Contacts.findOneAndRemove({_id: id, owner});
   if (!deletedContact) {
         res.status(404).json({
         status: "error",
@@ -136,8 +140,9 @@ const patchFavorite = async (req, res) => {
     });
   }
 
-  const { id  } = req.params;
-  const result = await Contacts.findByIdAndUpdate(id, req.body, {new: true});
+  const { id } = req.params;
+  const { _id: owner } = req.user;
+  const result = await Contacts.findOneAndUpdate({_id: id, owner}, req.body, {new: true});
   if (!result) {
       res.status(404).json({
       status: "error",
