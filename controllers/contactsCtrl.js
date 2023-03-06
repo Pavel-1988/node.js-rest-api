@@ -1,9 +1,12 @@
-const Contacts = require('../models/contactSchema')
+const {Contacts} = require('../models/contactModel')
 const { ctrlWrapper } = require("../helpers/ctrlWrapper");
-const {addContactValidation, updateContactValidation, favoriteContactValidation} = require("../schemas/validationsContact")
+const {addContactSchema, updateContactSchema, favoriteContactSchema} = require("../models/contactModel")
 
 const getAll = async (req, res) => {
-  const result = await Contacts.find({}, "-createdAt, -updatedAt");
+  const {_id: owner} = req.user;
+  const { page = 1, limit = 10, } = req.query;
+  const skip = (page - 1) * limit;
+  const result = await Contacts.find({owner}, "-createdAt -updatedAt", {skip, limit}).populate("owner", "name email");
   const quntityContacts = result.length
   res.json({
       status: "success",
@@ -17,15 +20,18 @@ const getAll = async (req, res) => {
 
 const getById = async (req, res) => {
   const { id } = req.params;
-  const result =  await Contacts.findById(id);
-    if (!result) {
-        res.status(404).json({
-        status: "error",
-        code: 404,
-        message: `Contact with id=${id} NOT FOUND`,
-      });
-      return;
-    }
+  const { _id: owner } = req.user;
+
+  const result = await Contacts.findOne({_id: id, owner} );
+  
+  if (!result) {
+      res.status(404).json({
+      status: "error",
+      code: 404,
+      message: `Contact with id=${id} NOT FOUND`,
+    });
+    return;
+  }
   res.json({
       status: "success",
       code: 200,
@@ -37,16 +43,17 @@ const getById = async (req, res) => {
 }
 
 const add = async (req, res) => {
-  const { error } = addContactValidation(req.body);
+  const { _id: owner } = req.user;
+  const { error } = addContactSchema(req.body);
   if (error) {
       res.status(400).json({
       status: "error",
       code: 400,
-      message:"missing required name field",
+      message:"missing required  field",
       });
       return;
   }
-  const result = await Contacts.create(req.body);
+  const result = await Contacts.create({...req.body, owner});
   res.status(201).json({
       status: "success",
       code: 201,
@@ -58,7 +65,7 @@ const add = async (req, res) => {
 }
 
 const updateById = async (req, res) => {
-  const { error } = favoriteContactValidation(req.body);
+  const { error } = updateContactSchema(req.body);
   if (error) {
     res.status(400).json({
     status: "error",
@@ -73,8 +80,9 @@ const updateById = async (req, res) => {
       message: "missing  fields"
     });
   }
-  const { id } = req.params;
-  const result = await Contacts.findByIdAndUpdate(id, req.body, {new: true});
+   const { id } = req.params;
+  const { _id: owner } = req.user;
+  const result = await Contacts.findOneAndUpdate({_id: id, owner}, req.body, {new: true});
    if (!result) {
           res.status(404).json({
           status: "error",
@@ -95,7 +103,8 @@ const updateById = async (req, res) => {
 
 const deleteById = async (req, res) => {
   const { id } = req.params;
-  const deletedContact = await Contacts.findByIdAndRemove(id);
+  const { _id: owner } = req.user;
+  const deletedContact = await Contacts.findOneAndRemove({_id: id, owner});
   if (!deletedContact) {
         res.status(404).json({
         status: "error",
@@ -107,15 +116,15 @@ const deleteById = async (req, res) => {
   res.json({
       status: "success",
       code: 200,
-      message: `Contact with id=${id} deleted`,
+      message: `Contact with id=${id} DELETED`,
       data: {
         deletedContact,
       },
     })
 }
 
-const patchById = async (req, res) => {
-  const { error } = updateContactValidation(req.body);
+const patchFavorite = async (req, res) => {
+  const { error } = favoriteContactSchema(req.body);
   if (error) {
     res.status(400).json({
     status: "error",
@@ -131,8 +140,9 @@ const patchById = async (req, res) => {
     });
   }
 
-  const { id  } = req.params;
-  const result = await Contacts.findByIdAndUpdate(id, req.body, {new: true});
+  const { id } = req.params;
+  const { _id: owner } = req.user;
+  const result = await Contacts.findOneAndUpdate({_id: id, owner}, req.body, {new: true});
   if (!result) {
       res.status(404).json({
       status: "error",
@@ -157,5 +167,5 @@ module.exports = {
   add: ctrlWrapper(add),
   updateById: ctrlWrapper(updateById),
   deleteById: ctrlWrapper(deleteById),
-  patchById: ctrlWrapper(patchById),
+  patchFavorite: ctrlWrapper(patchFavorite),
 }
