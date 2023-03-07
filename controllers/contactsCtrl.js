@@ -80,7 +80,8 @@ const updateById = async (req, res) => {
       message: "missing  fields"
     });
   }
-   const { id } = req.params;
+  
+  const { id } = req.params;
   const { _id: owner } = req.user;
   const result = await Contacts.findOneAndUpdate({_id: id, owner}, req.body, {new: true});
    if (!result) {
