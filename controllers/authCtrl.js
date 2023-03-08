@@ -2,6 +2,7 @@ const jwt = require("jsonwebtoken");
 const bcrypt = require("bcrypt")
 const { Conflict } = require("http-errors");
 const { Unauthorized } = require("http-errors");
+const gravatar = require("gravatar")
 
 const {User} = require('../models/userModel')
 const { ctrlWrapper } = require("../helpers/ctrlWrapper");
@@ -12,10 +13,12 @@ const signup = async (req, res) => {
   if (userMail) {
     throw new Conflict(`Email "${email}" in use`);
   }
+  const avatarURL = gravatar.url(email)
    await User.create({
     email,
     password: await bcrypt.hash(password, 10),
-    subscription,
+     subscription,
+    avatarURL
   });
    res.status(201).json({
       status: "success",
@@ -23,6 +26,7 @@ const signup = async (req, res) => {
       user: {
         email,
         subscription,
+        avatarURL,
       },
    });
 
