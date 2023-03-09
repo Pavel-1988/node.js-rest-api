@@ -3,7 +3,8 @@ const {
   login,
   getCurrent,
   logout,
-  patchSub
+  patchSub,
+  updateAvatar
 } = require("../../controllers/authCtrl");
 
 const { requiredFieldsValidate,auth, upload } = require('../../middlewares');
@@ -23,6 +24,6 @@ router.get('/logout', auth, logout)
 
 router.patch('/:id/subscription', auth, requiredFieldsValidate(patchSubSchema), patchSub)
 
-// router.patch("/avatars",auth, upload.single("avatar"), updateAvatar)
+router.patch("/avatars",auth, upload.single("avatar"), updateAvatar)
 
 module.exports = router
