@@ -2,9 +2,15 @@ const jwt = require("jsonwebtoken");
 const bcrypt = require("bcrypt")
 const { Conflict } = require("http-errors");
 const { Unauthorized } = require("http-errors");
+const gravatar = require("gravatar");
+const path = require("path");
+const fs = require("fs/promises");
+const Jimp = require("jimp");
+
 
 const {User} = require('../models/userModel')
 const { ctrlWrapper } = require("../helpers/ctrlWrapper");
+const avatarsDir = path.join(__dirname, "../", "public", "avatars");
 
 const signup = async (req, res) => {
   const { email, password, subscription } = req.body;
@@ -12,10 +18,12 @@ const signup = async (req, res) => {
   if (userMail) {
     throw new Conflict(`Email "${email}" in use`);
   }
+  const avatarURL = gravatar.url(email)
    await User.create({
     email,
     password: await bcrypt.hash(password, 10),
-    subscription,
+     subscription,
+    avatarURL
   });
    res.status(201).json({
       status: "success",
@@ -23,6 +31,7 @@ const signup = async (req, res) => {
       user: {
         email,
         subscription,
+        avatarURL,
       },
    });
 
@@ -101,11 +110,34 @@ const logout = async (req, res) => {
   res.status(204).json({});
 }
 
+const updateAvatar = async (req, res) => {
+  const { _id } = req.user;
+  const { path: tempUpload, originalname } = req.file;
+  const filename = `${_id}_${originalname}`;
+  const resultUpload = path.join(avatarsDir, filename);
+  await fs.rename(tempUpload, resultUpload);
+
+   Jimp.read(resultUpload)
+      .then((img) => {
+        return img.resize(250, 250).write(resultUpload);
+      })
+      .catch((error) => {
+        throw error;
+      });
+  
+  const avatarURL = path.join("avatars", filename);
+  await User.findByIdAndUpdate(_id, { avatarURL })
+  
+  res.json({
+    avatarURL,
+  })
+ }
+
 module.exports = {
   signup: ctrlWrapper(signup),
   login: ctrlWrapper(login),
   getCurrent: ctrlWrapper(getCurrent),
   logout: ctrlWrapper(logout),
   patchSub: ctrlWrapper(patchSub),
-
+  updateAvatar: ctrlWrapper(updateAvatar),
 }
