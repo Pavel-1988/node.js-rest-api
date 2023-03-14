@@ -24,6 +24,8 @@ router.get('/logout', auth, logout)
 
 router.patch('/:id/subscription', auth, requiredFieldsValidate(patchSubSchema), patchSub)
 
-router.patch("/avatars",auth, upload.single("avatar"), updateAvatar)
+router.patch("/avatars", auth, upload.single("avatar"), updateAvatar)
+
+router.patch("/verify/:verificationToken")
 
 module.exports = router
