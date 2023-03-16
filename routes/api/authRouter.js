@@ -1,7 +1,7 @@
 const {
   // signup,
-  login,
-  getCurrent,
+  // login,
+  // getCurrent,
   logout,
   patchSub,
   updateAvatar,
@@ -24,15 +24,15 @@ router.get("/verify/:verificationToken", ctrl.verifyEmail)
 
 router.post("/verify", validateBody(emailSchema), ctrl.resendVerifyEmail)
 
-router.post('/login', requiredFieldsValidate(regLogSchema), login )
+router.post('/login', requiredFieldsValidate(regLogSchema), ctrl.login )
 
-router.get('/current', auth ,  getCurrent)
+router.get('/current', auth ,  ctrl.getCurrent)
 
-router.get('/logout', auth, logout)
+router.get('/logout', auth, ctrl.logout)
 
-router.patch('/:id/subscription', auth, requiredFieldsValidate(patchSubSchema), patchSub)
+router.patch('/:id/subscription', auth, requiredFieldsValidate(patchSubSchema), ctrl.patchSub)
 
-router.patch("/avatars", auth, upload.single("avatar"), updateAvatar)
+router.patch("/avatars", auth, upload.single("avatar"), ctrl.updateAvatar)
 
 
 
