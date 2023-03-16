@@ -1,20 +1,28 @@
 const {
-  signup,
+  // signup,
   login,
   getCurrent,
   logout,
   patchSub,
-  updateAvatar
+  updateAvatar,
+  // verifyEmail,
+  // resendVerifyEmail
 } = require("../../controllers/authCtrl");
 
-const { requiredFieldsValidate,auth, upload } = require('../../middlewares');
-const {regLogSchema, patchSubSchema} = require('../../models/userModel')
+const ctrl =  require("../../controllers/auth")
+
+const { requiredFieldsValidate,auth, upload, validateBody } = require('../../middlewares');
+const {regLogSchema, patchSubSchema, emailSchema} = require('../../models/userModel')
 
 const express = require('express')
 const router = express.Router()
 
 
-router.post('/signup', requiredFieldsValidate(regLogSchema), signup )
+router.post('/signup', requiredFieldsValidate(regLogSchema), ctrl.signup)
+
+router.get("/verify/:verificationToken", ctrl.verifyEmail)
+
+router.post("/verify", validateBody(emailSchema), ctrl.resendVerifyEmail)
 
 router.post('/login', requiredFieldsValidate(regLogSchema), login )
 
@@ -26,6 +34,6 @@ router.patch('/:id/subscription', auth, requiredFieldsValidate(patchSubSchema), 
 
 router.patch("/avatars", auth, upload.single("avatar"), updateAvatar)
 
-router.patch("/verify/:verificationToken")
+
 
 module.exports = router
