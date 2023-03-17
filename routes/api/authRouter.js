@@ -1,17 +1,7 @@
-const {
-  // signup,
-  // login,
-  // getCurrent,
-  logout,
-  patchSub,
-  updateAvatar,
-  // verifyEmail,
-  // resendVerifyEmail
-} = require("../../controllers/authCtrl");
 
 const ctrl =  require("../../controllers/auth")
 
-const { requiredFieldsValidate,auth, upload, validateBody } = require('../../middlewares');
+const { requiredFieldsValidate, auth, upload, validateBody } = require('../../middlewares');
 const {regLogSchema, patchSubSchema, emailSchema} = require('../../models/userModel')
 
 const express = require('express')
