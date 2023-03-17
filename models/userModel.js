@@ -24,7 +24,15 @@ const userSchema = new Schema(
      avatarURL: {
       type: String,
       required: true,
-    }
+    },
+    verify: {
+      type: Boolean,
+      default: false,
+    },
+    verificationToken: {
+      type: String,
+      required: [true, 'Verify token is required'],
+  },
   },
   { versionKey: false, timestamps: true }
 )
@@ -42,6 +50,13 @@ const patchSubSchema = (data) => {
   });
   return schema.validate(data)
 }
+const emailSchema = (data) => {
+  const schema = Joi.object({
+    email: Joi.string().email().required(),
+  });
+  return schema.validate(data)
+}
+
 
 const User = model('user', userSchema);
 
@@ -49,5 +64,6 @@ const User = model('user', userSchema);
 module.exports = {
   User,
   regLogSchema,
-  patchSubSchema
+  patchSubSchema,
+  emailSchema
 };

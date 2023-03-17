@@ -1,5 +1,5 @@
 const {Contacts} = require('../models/contactModel')
-const { ctrlWrapper } = require("../helpers/ctrlWrapper");
+const { ctrlWrapper } = require("../helpers");
 const {addContactSchema, updateContactSchema, favoriteContactSchema} = require("../models/contactModel")
 
 const getAll = async (req, res) => {
@@ -80,7 +80,7 @@ const updateById = async (req, res) => {
       message: "missing  fields"
     });
   }
-   const { id } = req.params;
+  const { id } = req.params;
   const { _id: owner } = req.user;
   const result = await Contacts.findOneAndUpdate({_id: id, owner}, req.body, {new: true});
    if (!result) {

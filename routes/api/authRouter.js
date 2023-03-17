@@ -1,29 +1,29 @@
-const {
-  signup,
-  login,
-  getCurrent,
-  logout,
-  patchSub,
-  updateAvatar
-} = require("../../controllers/authCtrl");
 
-const { requiredFieldsValidate,auth, upload } = require('../../middlewares');
-const {regLogSchema, patchSubSchema} = require('../../models/userModel')
+const ctrl =  require("../../controllers/auth")
+
+const { requiredFieldsValidate, auth, upload, validateBody } = require('../../middlewares');
+const {regLogSchema, patchSubSchema, emailSchema} = require('../../models/userModel')
 
 const express = require('express')
 const router = express.Router()
 
 
-router.post('/signup', requiredFieldsValidate(regLogSchema), signup )
+router.post('/signup', requiredFieldsValidate(regLogSchema), ctrl.signup)
 
-router.post('/login', requiredFieldsValidate(regLogSchema), login )
+router.get("/verify/:verificationToken", ctrl.verifyEmail)
 
-router.get('/current', auth ,  getCurrent)
+router.post("/verify", validateBody(emailSchema), ctrl.resendVerifyEmail)
 
-router.get('/logout', auth, logout)
+router.post('/login', requiredFieldsValidate(regLogSchema), ctrl.login )
 
-router.patch('/:id/subscription', auth, requiredFieldsValidate(patchSubSchema), patchSub)
+router.get('/current', auth ,  ctrl.getCurrent)
 
-router.patch("/avatars",auth, upload.single("avatar"), updateAvatar)
+router.get('/logout', auth, ctrl.logout)
+
+router.patch('/:id/subscription', auth, requiredFieldsValidate(patchSubSchema), ctrl.patchSub)
+
+router.patch("/avatars", auth, upload.single("avatar"), ctrl.updateAvatar)
+
+
 
 module.exports = router
